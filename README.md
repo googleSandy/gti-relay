@@ -77,15 +77,17 @@ result.tools_executed    # names from FUNCTION_CALL events
 result.error             # populated on FAILED / TIMEOUT
 ```
 
-Widget types observed from the API and the key that holds their payload:
+Widget types and the key that holds their payload. Run `examples/cli.py --raw` to see exactly what
+your prompt produced — the set varies by question.
 
-| `widget_type`   | payload key             | notable fields                                  |
-|-----------------|-------------------------|-------------------------------------------------|
-| `MARKDOWN_TEXT` | `markdown_text_widget`  | `text`, `gti_citations[]`                       |
-| `CODE`          | `code_widget`           | `language`, `code`                              |
-| `RULE`          | `rule_widget`           | `rule_content` (+ language fields if provided)  |
-| `GRAPH`         | `graph_widget`          | `language` (`MERMAID`), `title`, `source`       |
-| `MITRE_ATTACK`  | `mitre_attack_widget`   | `attack_matrix.tactics[].techniques[]`          |
+| `widget_type`   | payload key            | notable fields                                                      | status |
+|-----------------|------------------------|---------------------------------------------------------------------|--------|
+| `MARKDOWN_TEXT` | `markdown_text_widget` | `text`, `gti_citations[] {entity_type, entity_id, position}`         | verified live 2026-10 |
+| `GRAPH`         | `graph_widget`         | `language` (`MERMAID`), `title`, `description`, `source`             | verified live 2026-10 |
+| `MITRE_TREE`    | `mitre_tree_widget`    | `tree.tactics[] {id, name, description, link, techniques[]}`, `collection_id` | verified live 2026-10 |
+| `CODE`          | `code_widget`          | `language`, `code`                                                   | seen by earlier integrations |
+| `RULE`          | `rule_widget`          | `rule_content`                                                       | seen by earlier integrations |
+| `MITRE_ATTACK`  | `mitre_attack_widget`  | `attack_matrix.tactics[].techniques[]`                               | seen by earlier integrations; may be superseded by `MITRE_TREE` |
 
 ## Customization map — what to change, and where
 

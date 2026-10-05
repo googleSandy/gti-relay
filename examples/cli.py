@@ -33,7 +33,8 @@ def on_progress(u: ProgressUpdate) -> None:
 
 
 # CUSTOMIZE 3 — Rendering. Map the API's widgets to whatever your platform shows.
-# Widget types seen from the API: MARKDOWN_TEXT, CODE, RULE, GRAPH (mermaid), MITRE_ATTACK.
+# Verified live (2026-10): MARKDOWN_TEXT, GRAPH (mermaid), MITRE_TREE.
+# Also seen by earlier integrations: CODE, RULE, MITRE_ATTACK. Use --raw to see what you get.
 def render(r: InvestigationResult) -> str:
     out = [f"# {r.status} · session {r.session_id} · {r.execution_time_seconds:.0f}s", ""]
     if not r.ok:
@@ -51,13 +52,15 @@ def render(r: InvestigationResult) -> str:
 
     for w in r.widgets_of_type("GRAPH"):
         gw = w["graph_widget"]
-        out += ["", f"## {gw.get('title', 'Diagram')}", "```mermaid", gw.get("source", ""), "```"]
+        out += ["", f"## {gw.get('title', 'Diagram')}", gw.get("description", ""), "```mermaid", gw.get("source", ""), "```"]
 
-    for w in r.widgets_of_type("MITRE_ATTACK"):
+    for w in r.widgets_of_type("MITRE_TREE") + r.widgets_of_type("MITRE_ATTACK"):
+        tactics = (w.get("mitre_tree_widget", {}).get("tree", {}).get("tactics")
+                   or w.get("mitre_attack_widget", {}).get("attack_matrix", {}).get("tactics") or [])
         out += ["", "## MITRE ATT&CK"]
-        for tactic in w["mitre_attack_widget"].get("attack_matrix", {}).get("tactics", []):
+        for tactic in tactics:
             techs = ", ".join(f"{t.get('id')} {t.get('name')}" for t in tactic.get("techniques", []))
-            out.append(f"- **{tactic.get('name')}**: {techs}")
+            out.append(f"- **{tactic.get('id', '')} {tactic.get('name')}**: {techs}")
 
     if r.citations:
         out += ["", "## Citations"]
