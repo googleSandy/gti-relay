@@ -170,7 +170,7 @@ class GTIAgent:
         async with GTIAgent._discovery_lock:
             before = await self._latest_session_id(client)
             post = asyncio.create_task(client.post("/agentspace/sessions", data=data, files=files))
-            deadline = time.time() + 30
+            deadline = time.time() + min(30.0, self.timeout_seconds)
             while time.time() < deadline:
                 if post.done():
                     try:
