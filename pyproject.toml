@@ -11,6 +11,9 @@ license = { file = "LICENSE" }
 requires-python = ">=3.10"
 dependencies = ["httpx>=0.27"]
 
+[project.urls]
+Repository = "https://github.com/googleSandy/gti-relay"
+
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.23"]
 chat = ["fastapi>=0.110", "uvicorn>=0.29", "google-api-python-client>=2.100", "google-auth>=2.25", "requests>=2.31"]

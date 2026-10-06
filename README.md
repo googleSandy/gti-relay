@@ -11,7 +11,9 @@ Your prompt policy, your SIEM's query language, your detection-rule format, how 
 and which chat platform you use all live in your own adapter.
 
 ```
-pip install -e .          # or copy gti_relay/client.py into your project; it's one file
+pip install git+https://github.com/googleSandy/gti-relay
+# or: git clone https://github.com/googleSandy/gti-relay && cd gti-relay && pip install -e .
+# or: copy gti_relay/client.py into your project; it's one file
 ```
 
 ## 30-second example
@@ -250,7 +252,9 @@ pytest
 ## Related
 
 * **Google Chat reference bot**: a full-fat, opinionated adapter (Cards V2, Cloud Run, IOC
-  enrichment, MITRE rendering) built on the same approach. See the sibling `gtichatbot` project.
+  enrichment, MITRE rendering) built on the same approach:
+  [googleSandy/gtichatbot](https://github.com/googleSandy/gtichatbot). It has its own client
+  (`gti_tool.py`) and does not import `gti_relay`.
 * GTI Agentic API docs: https://gtidocs.virustotal.com/
 
 ## License
