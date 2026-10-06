@@ -103,7 +103,7 @@ async def test_timeout(monkeypatch):
     async def handler(req: httpx.Request) -> httpx.Response:
         if req.method == "POST":
             await asyncio.sleep(10)
-        return httpx.Response(200, json={"data": [], "data_": None})
+        return httpx.Response(200, json={"data": []})
 
     patch_client(monkeypatch, handler)
     r = await GTIAgent(api_key="k", poll_interval=0.05, timeout_seconds=0.5).investigate("x")

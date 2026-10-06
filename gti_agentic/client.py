@@ -21,7 +21,6 @@ from typing import Any, Callable, Dict, List, Optional
 import httpx
 
 __all__ = ["GTIAgent", "InvestigationResult", "ProgressUpdate"]
-__version__ = "0.1.0"
 
 logger = logging.getLogger("gti_agentic")
 BASE_URL = "https://www.virustotal.com/api/v3"
@@ -62,7 +61,7 @@ class InvestigationResult:
 
     @property
     def citations(self) -> List[Dict[str, Any]]:
-        """``gti_citations`` from every markdown widget (collections, actors, reports...)."""
+        """``gti_citations`` from every markdown widget (collections, actors, files, reports...)."""
         return [
             c
             for w in self.widgets
@@ -71,7 +70,7 @@ class InvestigationResult:
         ]
 
     def widgets_of_type(self, widget_type: str) -> List[Dict[str, Any]]:
-        """e.g. ``widgets_of_type("GRAPH")``, ``"RULE"``, ``"CODE"``, ``"MITRE_ATTACK"``."""
+        """e.g. ``widgets_of_type("GRAPH")``, ``"MITRE_TREE"``, ``"MARKDOWN_TEXT"``."""
         return [w for w in self.widgets if w.get("widget_type") == widget_type]
 
 
@@ -81,6 +80,10 @@ class GTIAgent:
     ``POST /agentspace/sessions`` blocks until the agent finishes (often minutes).
     To stream progress we start the POST in the background, discover the new
     session id from the sessions list, and poll ``GET /agentspace/sessions/{id}``.
+
+    The API key is read from ``api_key=`` or the ``VT_API_KEY`` environment variable.
+    How that variable gets populated (secret manager, keychain, CI vault) is up to
+    your deployment — see README "Secrets".
     """
 
     _discovery_lock: Optional[asyncio.Lock] = None  # one discovery at a time per process
@@ -114,53 +117,56 @@ class GTIAgent:
         tools: List[str] = []
         seen: set = set()
         events: List[Dict[str, Any]] = []
+        final: Optional[List[Dict[str, Any]]] = None
         data = {"message": prompt}
         files = {"files": (file_name, file, "application/octet-stream")} if file else None
+
+        def result(status: str, error: Optional[str] = None) -> InvestigationResult:
+            return InvestigationResult(status, session_id or "", time.time() - start,
+                                       widgets=final or [], events=events, tools_executed=tools, error=error)
 
         async with httpx.AsyncClient(
             base_url=self.base_url, headers={"x-apikey": self.api_key}, timeout=self.timeout_seconds
         ) as client:
+
+            async def refresh() -> None:
+                nonlocal events, final
+                events = await self._events(client, session_id)
+                self._emit(events, seen, start, tools, on_progress)
+                final = _final_widgets(events)
+
             if session_id:
                 post = asyncio.create_task(client.post(f"/agentspace/sessions/{session_id}", data=data, files=files))
             else:
                 post, session_id = await self._start_session(client, data, files)
 
-            final: Optional[List[Dict[str, Any]]] = None
             while final is None:
                 if session_id:
-                    events = await self._events(client, session_id)
-                    self._emit(events, seen, start, tools, on_progress)
-                    final = _final_widgets(events)
+                    await refresh()
                     if final is not None:
                         break
                 if post.done():
-                    post_err = None if post.cancelled() else post.exception()
-                    if isinstance(post_err, httpx.TimeoutException):
-                        return InvestigationResult("TIMEOUT", session_id or "", time.time() - start,
-                                                   events=events, tools_executed=tools, error="Exceeded timeout_seconds.")
-                    if post_err:
-                        logger.warning("POST /agentspace/sessions failed: %s", post_err)
+                    err = None if post.cancelled() else post.exception()
+                    if isinstance(err, httpx.TimeoutException):
+                        return result("TIMEOUT", "Exceeded timeout_seconds.")
+                    if err:
+                        logger.warning("POST /agentspace/sessions failed: %s", err)
                     elif not session_id:
                         session_id = post.result().headers.get("x-session-id")
                     if session_id:
-                        events = await self._events(client, session_id)
-                        self._emit(events, seen, start, tools, on_progress)
-                        final = _final_widgets(events)
+                        await refresh()
                     break
                 if time.time() - start > self.timeout_seconds:
                     post.cancel()
-                    return InvestigationResult("TIMEOUT", session_id or "", time.time() - start,
-                                               events=events, tools_executed=tools, error="Exceeded timeout_seconds.")
+                    return result("TIMEOUT", "Exceeded timeout_seconds.")
                 await asyncio.sleep(self.poll_interval)
 
             if not post.done():
                 post.cancel()
 
         if final is None:
-            return InvestigationResult("FAILED", session_id or "", time.time() - start,
-                                       events=events, tools_executed=tools, error="Session ended without a final response.")
-        return InvestigationResult("COMPLETED", session_id or "", time.time() - start,
-                                   widgets=final, events=events, tools_executed=tools)
+            return result("FAILED", "Session ended without a final response.")
+        return result("COMPLETED")
 
     # ------------------------------------------------------------------ internals
 

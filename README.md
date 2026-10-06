@@ -11,7 +11,6 @@ how reports look, which chat platform you use — is yours to decide and lives i
 not in this package.
 
 ```
-pip install httpx
 pip install -e .          # or copy gti_agentic/client.py into your project — it's one file
 ```
 
@@ -22,7 +21,7 @@ import asyncio
 from gti_agentic import GTIAgent
 
 async def main():
-    agent = GTIAgent(api_key="...")            # or set VT_API_KEY
+    agent = GTIAgent()                         # reads VT_API_KEY — see "Secrets" below
     result = await agent.investigate(
         "Summarise APT29 activity in the last 90 days",
         on_progress=lambda u: print(f"[{u.elapsed_seconds:.0f}s] {u.kind}: {u.detail}"),
@@ -33,9 +32,11 @@ asyncio.run(main())
 ```
 
 ```
-export VT_API_KEY=...
-python -m examples.cli "Deobfuscate this and explain it" --file sample.ps1
-python -m examples.cli "What is Akira ransomware?" --raw        # dump the widgets as JSON
+# macOS Keychain example — see "Secrets" for other options
+VT_API_KEY="$(security find-generic-password -s gti-api-key -w)" \
+  python -m examples.cli "Deobfuscate this and explain it" --file sample.ps1
+
+VT_API_KEY=... python -m examples.cli "What is Akira ransomware?" --raw   # dump widgets as JSON
 ```
 
 ## How it works
@@ -100,19 +101,40 @@ This package deliberately has **no knobs for content**. All customization happen
 | 2 | Change how progress is shown (edit a placeholder message, log, progress bar, nothing) | **Your adapter** → `on_progress` | `ProgressUpdate.kind` is `THOUGHT` / `TOOL_CALL` / `TOOL_RESULT`; `.event` is the raw event if you need more. |
 | 3 | Change how the report looks (Slack blocks, Teams Adaptive Cards, Google Chat Cards, HTML email, ticket body) | **Your adapter** → `render()` | Walk `result.widgets`. Render `GRAPH` via your own mermaid renderer or e.g. `https://mermaid.ink/img/<base64>` — your call. |
 | 4 | Link IOCs/actors to your TIP, VirusTotal, or an internal portal | **Your adapter** → `render()` | Use `result.citations` (typed entity ids) rather than regex over the markdown. |
-| 5 | Timeouts, poll rate, API key source, private API endpoint | `GTIAgent(api_key=, timeout_seconds=, poll_interval=, base_url=)` | Defaults: 900 s, 2 s, env `VT_API_KEY`, public VT API. |
-| 6 | Multi-turn conversations | `investigate(..., session_id=result.session_id)` | Posts to the existing session instead of creating one. |
-| 7 | Upload a sample / script / log for analysis | `investigate(..., file=bytes, file_name="x.ps1")` | Multipart upload to the same endpoint. |
-| 8 | Wire a chat platform | copy `examples/chat_adapter_skeleton.py` | Three `TODO`s: post a message, edit a message, your platform's "message received" hook. |
+| 5 | Timeouts, poll rate, private API endpoint | `GTIAgent(timeout_seconds=, poll_interval=, base_url=)` | Defaults: 900 s, 2 s, public VT API. |
+| 6 | Where the API key comes from | your deployment — see **Secrets** | The client only ever reads `VT_API_KEY` (or `api_key=`). It never reads files. |
+| 7 | Multi-turn conversations | `investigate(..., session_id=result.session_id)` | Posts to the existing session instead of creating one. |
+| 8 | Upload a sample / script / log for analysis | `investigate(..., file=bytes, file_name="x.ps1")` | Multipart upload to the same endpoint. |
+| 9 | Wire a chat platform | copy `examples/chat_adapter_skeleton.py` | Three `TODO`s: post a message, edit a message, your platform's "message received" hook. |
 
 Things you should **not** need to edit: `gti_agentic/client.py`. If you find yourself doing so,
 it's probably an API change — please open an issue.
+
+## Secrets
+
+The GTI/VirusTotal API key is a credential with billing and data-access consequences. This package
+reads it from the `VT_API_KEY` environment variable (or `GTIAgent(api_key=...)`) and **nothing else** —
+no `.env` files, no config files, no keyring lookups. Inject it from wherever your organisation keeps
+secrets:
+
+| Context | How to get it into `VT_API_KEY` |
+|---|---|
+| Google Cloud Run / Functions | `gcloud run deploy … --set-secrets=VT_API_KEY=gti-api-key:latest` (Secret Manager) |
+| AWS Lambda / ECS | Secrets Manager → task definition `secrets:` / Lambda env from Parameter Store |
+| Kubernetes | `envFrom: secretRef` backed by External Secrets / Vault Agent |
+| CI (GitHub Actions, Cloud Build) | repository / project secret → `env: VT_API_KEY: ${{ secrets.GTI_API_KEY }}` |
+| Local dev — macOS | `security add-generic-password -s gti-api-key -a "$USER" -w` once, then `VT_API_KEY="$(security find-generic-password -s gti-api-key -w)" python …` |
+| Local dev — 1Password / Bitwarden | `op run --env-file=<(echo 'VT_API_KEY=op://vault/gti/credential') -- python …` |
+| Local dev — any | `read -s VT_API_KEY && export VT_API_KEY` (never echoes, never persists) |
+
+> Do not commit `.env` files, and do not paste keys into chat tools or tickets. If a key is exposed,
+> rotate it at https://www.virustotal.com/gui/my-apikey.
 
 ## Project layout
 
 ```
 gti_agentic/
-  client.py                  the entire library (~200 lines, httpx only)
+  client.py                  the entire library (~250 lines, httpx only)
 examples/
   cli.py                     terminal adapter with CUSTOMIZE markers
   chat_adapter_skeleton.py   platform-agnostic chat adapter template
