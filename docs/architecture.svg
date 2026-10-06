@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" width="1400" height="1000" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f6368"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a73e8"/>
+    </marker>
+    <style>
+      .t { font-size: 17px; font-weight: 600; fill: #202124; }
+      .s { font-size: 13px; fill: #5f6368; }
+      .m { font-size: 12.5px; fill: #3c4043; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .lbl { font-size: 13px; fill: #3c4043; }
+      .n { font-size: 13px; font-weight: 700; fill: #fff; }
+      .leg { font-size: 14.5px; fill: #3c4043; }
+      .line { stroke: #5f6368; stroke-width: 2; fill: none; }
+      .blue { stroke: #1a73e8; stroke-width: 2; fill: none; }
+      .dash { stroke-dasharray: 6 5; }
+      .ink { stroke: #202124; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+
+    <!-- GTI agent: the only robot with a brain -->
+    <symbol id="smartbot" viewBox="0 0 150 100" overflow="visible">
+      <!-- thought bubble -->
+      <circle cx="88" cy="22" r="3" fill="#fff" stroke="#dadce0" stroke-width="1.5"/>
+      <circle cx="97" cy="13" r="4.5" fill="#fff" stroke="#dadce0" stroke-width="1.5"/>
+      <rect x="102" y="-14" width="46" height="24" rx="12" fill="#fff" stroke="#dadce0" stroke-width="1.5"/>
+      <text x="125" y="3" font-size="12" font-weight="700" fill="#1a73e8" text-anchor="middle">LLM</text>
+      <!-- antenna -->
+      <line x1="50" y1="10" x2="50" y2="22" stroke="#5f6368" stroke-width="2.5"/>
+      <circle cx="50" cy="7" r="5" fill="#fbbc04">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <!-- ears -->
+      <rect x="13" y="32" width="8" height="16" rx="3" fill="#1967d2"/>
+      <rect x="79" y="32" width="8" height="16" rx="3" fill="#1967d2"/>
+      <!-- head -->
+      <rect x="20" y="22" width="60" height="40" rx="13" fill="#4285f4"/>
+      <rect x="28" y="29" width="44" height="26" rx="9" fill="#e8f0fe"/>
+      <circle cx="40" cy="40" r="4" fill="#202124">
+        <animate attributeName="r" values="4;4;0.6;4;4" keyTimes="0;0.9;0.94;0.98;1" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="60" cy="40" r="4" fill="#202124">
+        <animate attributeName="r" values="4;4;0.6;4;4" keyTimes="0;0.9;0.94;0.98;1" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M43,47 q7,5 14,0" class="ink" stroke-width="2"/>
+      <circle cx="33" cy="49" r="2.5" fill="#f28b82" opacity="0.8"/>
+      <circle cx="67" cy="49" r="2.5" fill="#f28b82" opacity="0.8"/>
+      <!-- body -->
+      <rect x="24" y="63" width="52" height="31" rx="10" fill="#4285f4"/>
+      <!-- Google Threat Intelligence logo badge (embedded so it renders inside GitHub's <img> sandbox) -->
+      <circle cx="50" cy="78.5" r="13" fill="#fff"/>
+      <image x="39" y="67.5" width="22" height="22" href="data:image/png;base64,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"/>
+      <!-- arm + magnifying glass -->
+      <path d="M24,70 L12,82" stroke="#1967d2" stroke-width="5" stroke-linecap="round"/>
+      <path d="M76,70 L84,62" stroke="#1967d2" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="91" cy="54" r="9" fill="#e8f0fe" fill-opacity="0.7" stroke="#5f6368" stroke-width="3"/>
+      <line x1="85" y1="61" x2="80" y2="66" stroke="#5f6368" stroke-width="4" stroke-linecap="round"/>
+      <!-- feet -->
+      <rect x="33" y="92" width="13" height="8" rx="3" fill="#1967d2"/>
+      <rect x="54" y="92" width="13" height="8" rx="3" fill="#1967d2"/>
+    </symbol>
+
+    <!-- API key -->
+    <symbol id="key" viewBox="0 0 26 14" overflow="visible">
+      <circle cx="6" cy="7" r="4.5" fill="#fff" stroke="#e37400" stroke-width="2.5"/>
+      <path d="M10.5,7 H24 M19,7 v4 M23,7 v3" stroke="#e37400" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </symbol>
+
+    <!-- Cloud Run relay: wind-up courier, no antenna, no brain -->
+    <symbol id="courier" viewBox="0 0 110 100" overflow="visible">
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="0.9s" repeatCount="indefinite"/>
+        <!-- envelope -->
+        <rect x="0" y="52" width="32" height="22" rx="2" fill="#fff" stroke="#5f6368" stroke-width="2"/>
+        <path d="M0,53 L16,65 L32,53" fill="none" stroke="#5f6368" stroke-width="2"/>
+        <path d="M30,62 L40,66" stroke="#188038" stroke-width="5" stroke-linecap="round"/>
+        <!-- mail cap -->
+        <path d="M36,26 q19,-14 38,0 z" fill="#188038"/>
+        <rect x="32" y="24" width="46" height="5" rx="2.5" fill="#137333"/>
+        <!-- head -->
+        <rect x="36" y="28" width="38" height="28" rx="9" fill="#34a853"/>
+        <rect x="42" y="33" width="26" height="17" rx="6" fill="#e6f4ea"/>
+        <path d="M47,43 q3,-4 6,0 M57,43 q3,-4 6,0" class="ink" stroke-width="1.8"/>
+        <!-- body -->
+        <rect x="39" y="58" width="32" height="24" rx="7" fill="#34a853"/>
+        <path d="M71,66 L80,72" stroke="#188038" stroke-width="5" stroke-linecap="round"/>
+        <!-- wind-up key -->
+        <g transform="translate(73,63)">
+          <line x1="0" y1="0" x2="10" y2="-6" stroke="#5f6368" stroke-width="3"/>
+          <g transform="translate(12,-7)">
+            <animateTransform attributeName="transform" type="rotate" values="0 0 0;360 0 0" dur="2s" additive="sum" repeatCount="indefinite"/>
+            <ellipse cx="0" cy="-6" rx="4.5" ry="5.5" fill="#9aa0a6" stroke="#5f6368" stroke-width="1.5"/>
+            <ellipse cx="0" cy="6" rx="4.5" ry="5.5" fill="#9aa0a6" stroke="#5f6368" stroke-width="1.5"/>
+            <circle r="2.5" fill="#5f6368"/>
+          </g>
+        </g>
+      </g>
+      <!-- legs -->
+      <path d="M48,82 L46,96 M62,82 L64,96" stroke="#188038" stroke-width="5" stroke-linecap="round"/>
+      <rect x="39" y="94" width="12" height="6" rx="3" fill="#137333"/>
+      <rect x="59" y="94" width="12" height="6" rx="3" fill="#137333"/>
+    </symbol>
+  </defs>
+
+  <rect width="1400" height="1000" fill="#ffffff"/>
+  <text x="40" y="48" font-size="24" font-weight="700" fill="#202124">gti-relay: architecture and traffic flow</text>
+  <text x="40" y="74" class="s">Example deployment: a starter chat adapter on Cloud Run using GTIRelay to call the Google Threat Intelligence Agentic API</text>
+
+  <g transform="translate(0,70)">
+    <!-- Analyst (human) -->
+    <rect x="40" y="170" width="150" height="190" rx="12" fill="#f1f3f4" stroke="#dadce0"/>
+    <path d="M78,300 q0,-42 37,-42 q37,0 37,42 z" fill="#5f6368"/>
+    <path d="M104,262 l11,14 l11,-14" fill="#fff"/>
+    <circle cx="115" cy="228" r="22" fill="#f9cb9c"/>
+    <path d="M93,226 q2,-26 24,-24 q20,2 20,22 q-10,-10 -26,-8 q-10,1 -18,10 z" fill="#3c2a21"/>
+    <circle cx="107" cy="231" r="2.4" fill="#202124"/>
+    <circle cx="123" cy="231" r="2.4" fill="#202124"/>
+    <path d="M109,240 q6,4 12,0" class="ink" stroke-width="1.8"/>
+    <path d="M91,226 q0,-30 24,-30 q24,0 24,30" fill="none" stroke="#202124" stroke-width="3"/>
+    <rect x="86" y="222" width="8" height="14" rx="3" fill="#202124"/>
+    <rect x="136" y="222" width="8" height="14" rx="3" fill="#202124"/>
+    <rect x="88" y="282" width="54" height="22" rx="3" fill="#bdc1c6" stroke="#9aa0a6"/>
+    <circle cx="115" cy="293" r="3.5" fill="#fff"/>
+    <text x="115" y="335" class="t" text-anchor="middle">Analyst</text>
+    <text x="115" y="352" class="s" text-anchor="middle">@mention or DM</text>
+
+    <!-- Chat platform -->
+    <g>
+      <rect x="262" y="92" width="64" height="30" rx="15" fill="#fff" stroke="#aecbfa" stroke-width="1.5"/>
+      <path d="M280,121 l-6,12 l14,-11" fill="#fff" stroke="#aecbfa" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="276" y="121" width="12" height="3" fill="#fff"/>
+      <text x="294" y="112" font-size="12.5" font-weight="700" fill="#1a73e8" text-anchor="middle">@gti</text>
+      <rect x="338" y="102" width="56" height="26" rx="13" fill="#e8f0fe" stroke="#aecbfa" stroke-width="1.5"/>
+      <circle cx="354" cy="115" r="3" fill="#1a73e8"><animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite"/></circle>
+      <circle cx="366" cy="115" r="3" fill="#1a73e8"><animate attributeName="opacity" values="1;0.2;1" dur="1.2s" begin="0.2s" repeatCount="indefinite"/></circle>
+      <circle cx="378" cy="115" r="3" fill="#1a73e8"><animate attributeName="opacity" values="1;0.2;1" dur="1.2s" begin="0.4s" repeatCount="indefinite"/></circle>
+    </g>
+    <rect x="235" y="140" width="190" height="250" rx="12" fill="#e8f0fe" stroke="#aecbfa"/>
+    <text x="330" y="175" class="t" text-anchor="middle">Chat platform</text>
+    <rect x="255" y="195" width="150" height="70" rx="8" fill="#fff" stroke="#aecbfa"/>
+    <text x="330" y="226" class="t" text-anchor="middle" font-size="15">Google Chat</text>
+    <text x="330" y="246" class="s" text-anchor="middle">Chat API</text>
+    <rect x="255" y="285" width="150" height="70" rx="8" fill="#fff" stroke="#aecbfa"/>
+    <text x="330" y="316" class="t" text-anchor="middle" font-size="15">Slack</text>
+    <text x="330" y="336" class="s" text-anchor="middle">Events / Web API</text>
+
+    <!-- Cloud Run -->
+    <use href="#courier" x="714" y="-8" width="132" height="120"/>
+    <rect x="650" y="110" width="270" height="310" rx="12" fill="#e6f4ea" stroke="#a8dab5"/>
+    <text x="785" y="142" class="t" text-anchor="middle">Cloud Run service</text>
+    <text x="785" y="160" class="s" text-anchor="middle">your code, no LLM</text>
+    <rect x="670" y="180" width="230" height="95" rx="8" fill="#fff" stroke="#a8dab5"/>
+    <text x="785" y="208" class="t" text-anchor="middle" font-size="15">Example adapter (starter)</text>
+    <text x="785" y="230" class="m" text-anchor="middle">google_chat_adapter.py</text>
+    <text x="785" y="248" class="m" text-anchor="middle">slack_adapter.py</text>
+    <text x="785" y="266" class="s" text-anchor="middle">verify · prompt policy · render</text>
+    <rect x="670" y="305" width="230" height="90" rx="8" fill="#fff" stroke="#a8dab5"/>
+    <text x="785" y="335" class="t" text-anchor="middle" font-size="15">GTIRelay</text>
+    <text x="785" y="356" class="m" text-anchor="middle">gti_relay/client.py</text>
+    <text x="785" y="376" class="s" text-anchor="middle">POST + poll, returns widgets</text>
+    <!-- stopwatch: polls every 2 s -->
+    <g transform="translate(878,327)">
+      <circle r="11" fill="#fff" stroke="#5f6368" stroke-width="2"/>
+      <rect x="-3" y="-17" width="6" height="4" rx="1" fill="#5f6368"/>
+      <line x1="0" y1="0" x2="0" y2="-7" stroke="#d93025" stroke-width="2" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" values="0;360" dur="2s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    <path d="M785,277 L785,303" class="line" marker-end="url(#a)" marker-start="url(#a)"/>
+
+    <!-- GTI -->
+    <use href="#smartbot" x="1185" y="10" width="150" height="100"/>
+    <rect x="1110" y="110" width="250" height="310" rx="12" fill="#fef7e0" stroke="#fdd663"/>
+    <text x="1235" y="142" class="t" text-anchor="middle">Google Threat Intelligence</text>
+    <text x="1235" y="162" class="m" text-anchor="middle">/api/v3/agentspace</text>
+    <rect x="1130" y="185" width="210" height="210" rx="8" fill="#fff" stroke="#fdd663"/>
+    <text x="1235" y="215" class="t" text-anchor="middle" font-size="15">GTI agent</text>
+    <text x="1235" y="245" class="lbl" text-anchor="middle">LLM reasoning</text>
+    <text x="1235" y="268" class="lbl" text-anchor="middle">GTI / VirusTotal tools</text>
+    <text x="1235" y="291" class="lbl" text-anchor="middle">reports, actors, IOCs</text>
+    <text x="1235" y="314" class="lbl" text-anchor="middle">file analysis</text>
+    <text x="1235" y="350" class="s" text-anchor="middle">session events +</text>
+    <text x="1235" y="368" class="s" text-anchor="middle">final-response widgets</text>
+
+    <!-- Secret Manager -->
+    <rect x="655" y="490" width="260" height="64" rx="10" fill="#fce8e6" stroke="#f6aea9"/>
+    <g transform="translate(682,522)">
+      <path d="M-7,-4 v-6 a7,7 0 0 1 14,0 v6" fill="none" stroke="#c5221f" stroke-width="3"/>
+      <rect x="-10" y="-4" width="20" height="16" rx="3" fill="#d93025"/>
+      <circle cx="0" cy="4" r="2.5" fill="#fff"/>
+    </g>
+    <text x="802" y="518" class="t" text-anchor="middle" font-size="15">Secret Manager</text>
+    <text x="802" y="538" class="m" text-anchor="middle">VT_API_KEY</text>
+    <path d="M785,490 L785,424" class="line dash" marker-end="url(#a)"/>
+    <text x="797" y="462" class="s">env var, set at deploy</text>
+
+    <!-- 1 / 7: analyst <-> platform -->
+    <path d="M192,235 L233,235" class="line" marker-end="url(#a)"/>
+    <circle cx="212" cy="216" r="11" fill="#5f6368"/><text x="212" y="220.5" class="n" text-anchor="middle">1</text>
+    <path d="M233,305 L192,305" class="blue" marker-end="url(#ab)"/>
+    <circle cx="212" cy="324" r="11" fill="#1a73e8"/><text x="212" y="328.5" class="n" text-anchor="middle">7</text>
+
+    <!-- 2 / 3 / 6-7: platform <-> adapter -->
+    <path d="M427,200 L668,200" class="line" marker-end="url(#a)"/>
+    <circle cx="447" cy="183" r="11" fill="#5f6368"/><text x="447" y="187.5" class="n" text-anchor="middle">2</text>
+    <text x="466" y="188" class="lbl">signed HTTPS webhook</text>
+    <path d="M668,240 L427,240" class="line" marker-end="url(#a)"/>
+    <circle cx="447" cy="257" r="11" fill="#5f6368"/><text x="447" y="261.5" class="n" text-anchor="middle">3</text>
+    <text x="466" y="262" class="lbl">ack + "Investigating…"</text>
+    <path d="M668,320 L427,320" class="blue" marker-end="url(#ab)"/>
+    <circle cx="447" cy="303" r="11" fill="#1a73e8"/><text x="447" y="307.5" class="n" text-anchor="middle">6</text>
+    <circle cx="472" cy="303" r="11" fill="#1a73e8"/><text x="472" y="307.5" class="n" text-anchor="middle">7</text>
+    <text x="492" y="308" class="lbl">progress edits, final report</text>
+
+    <!-- 4 / 5: GTIRelay <-> GTI -->
+    <path d="M902,318 L1108,318" class="line" marker-end="url(#a)"/>
+    <circle cx="942" cy="300" r="11" fill="#5f6368"/><text x="942" y="304.5" class="n" text-anchor="middle">4</text>
+    <text x="960" y="305" class="m">POST /sessions</text>
+    <use href="#key" x="934" y="252" width="26" height="14"/>
+    <text x="966" y="263" class="lbl" font-weight="600" fill="#b06000">x-apikey header</text>
+    <text x="966" y="279" class="lbl" font-weight="600" fill="#b06000">on every call</text>
+    <use href="#key" x="1080" y="300" width="20" height="11"/>
+    <use href="#key" x="1080" y="364" width="20" height="11"/>
+    <path d="M1108,350 L902,350" class="blue dash" marker-end="url(#ab)"/>
+    <text x="942" y="343" class="lbl">events, widgets</text>
+    <path d="M902,382 L1108,382" class="line" marker-end="url(#a)"/>
+    <circle cx="942" cy="401" r="11" fill="#5f6368"/><text x="942" y="405.5" class="n" text-anchor="middle">5</text>
+    <text x="960" y="406" class="m">GET /sessions/{id}</text>
+
+    <!-- Legend -->
+    <line x1="40" y1="600" x2="1360" y2="600" stroke="#dadce0"/>
+    <text x="40" y="636" class="t">Request flow</text>
+    <text x="40" y="668" class="leg"><tspan font-weight="700">1</tspan>  The analyst @mentions the bot or DMs it, optionally attaching a file.</text>
+    <text x="40" y="696" class="leg"><tspan font-weight="700">2</tspan>  Google Chat (Google-signed ID token) or Slack (signing secret) sends an HTTPS webhook to the Cloud Run service.</text>
+    <text x="40" y="724" class="leg"><tspan font-weight="700">3</tspan>  The adapter verifies the request, acks right away (Slack allows 3 s), and posts an "Investigating…" placeholder in the thread.</text>
+    <text x="40" y="752" class="leg"><tspan font-weight="700">4</tspan>  GTIRelay sends the prompt and file to POST /agentspace/sessions, with the API key in the x-apikey header. That call blocks until the agent finishes, often for minutes.</text>
+    <text x="40" y="780" class="leg"><tspan font-weight="700">5</tspan>  Meanwhile GTIRelay polls GET /agentspace/sessions/{id} every 2 s (same header) for new agent thoughts and tool calls.</text>
+    <text x="40" y="808" class="leg"><tspan font-weight="700">6</tspan>  The adapter edits the placeholder with progress, at most once every 3 s.</text>
+    <text x="40" y="836" class="leg"><tspan font-weight="700">7</tspan>  On AGENT_FINAL_RESPONSE the adapter renders the widgets and replaces the placeholder with the report.</text>
+
+    <rect x="40" y="862" width="1320" height="46" rx="8" fill="#f8f9fa" stroke="#dadce0"/>
+    <text x="58" y="891" class="leg">The model and the threat-intel tools run inside GTI. The Cloud Run service relays prompts, files, progress, and results, and makes no model calls.</text>
+  </g>
+</svg>

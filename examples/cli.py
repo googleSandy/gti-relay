@@ -14,7 +14,7 @@ import json
 import sys
 from pathlib import Path
 
-from gti_agentic import GTIAgent, InvestigationResult, ProgressUpdate
+from gti_relay import GTIRelay, InvestigationResult, ProgressUpdate
 
 # CUSTOMIZE 1 — Prompt policy.
 # Anything you always want appended: output format, required sections, your SIEM's
@@ -60,8 +60,8 @@ def render(r: InvestigationResult) -> str:
 
 
 async def run(prompt: str, file: Path | None, raw: bool) -> int:
-    agent = GTIAgent()  # CUSTOMIZE 4 — api_key / timeout_seconds / poll_interval
-    result = await agent.investigate(
+    relay = GTIRelay()  # CUSTOMIZE 4 — api_key / timeout_seconds / poll_interval
+    result = await relay.investigate(
         build_prompt(prompt),
         file=file.read_bytes() if file else None,
         file_name=file.name if file else "artifact.bin",

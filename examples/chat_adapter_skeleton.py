@@ -6,9 +6,9 @@ Mattermost, Discord, or a ticketing webhook. Replace the three TODOs.
 
 import asyncio
 
-from gti_agentic import GTIAgent, InvestigationResult, ProgressUpdate
+from gti_relay import GTIRelay, InvestigationResult, ProgressUpdate
 
-agent = GTIAgent()  # reads VT_API_KEY
+relay = GTIRelay()  # reads VT_API_KEY
 
 # CUSTOMIZE 1 — your prompt policy (see examples/cli.py for the idea)
 PROMPT_SUFFIX = ""
@@ -26,7 +26,7 @@ async def handle_message(user_text: str, conversation_ref: dict, attachment: byt
     def on_progress(u: ProgressUpdate) -> None:  # CUSTOMIZE 2 — progress display
         loop.create_task(update(placeholder, f"{u.kind}: {u.detail[:150]}"))  # TODO 2: platform edit-message
 
-    result = await agent.investigate(
+    result = await relay.investigate(
         user_text + (f"\n\n{PROMPT_SUFFIX}" if PROMPT_SUFFIX else ""),
         file=attachment,
         on_progress=on_progress,

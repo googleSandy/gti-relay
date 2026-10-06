@@ -1,10 +1,11 @@
 """Minimal async client for the Google Threat Intelligence Agentic API.
 
-Depends only on ``httpx``. Holds no opinions about prompts, report layout,
-SIEM dialects, or chat platforms — those belong in your adapter.
+This is a relay, not an agent: it sends your prompt to the GTI agent, polls for progress,
+and returns the agent's response verbatim. It makes no model calls. Depends only on ``httpx``. Holds no opinions about prompts, report layout,
+SIEM dialects, or chat platforms; those belong in your adapter.
 
-    agent = GTIAgent(api_key="...")
-    result = await agent.investigate("Summarise APT29 TTPs", on_progress=print)
+    relay = GTIRelay(api_key="...")
+    result = await relay.investigate("Summarise APT29 TTPs", on_progress=print)
     result.markdown   # MARKDOWN_TEXT widgets joined
     result.widgets    # every final-response widget, untouched
 """
@@ -20,9 +21,9 @@ from typing import Any, Callable, Dict, List, Optional
 
 import httpx
 
-__all__ = ["GTIAgent", "InvestigationResult", "ProgressUpdate"]
+__all__ = ["GTIRelay", "InvestigationResult", "ProgressUpdate"]
 
-logger = logging.getLogger("gti_agentic")
+logger = logging.getLogger("gti_relay")
 BASE_URL = "https://www.virustotal.com/api/v3"
 
 
@@ -74,7 +75,7 @@ class InvestigationResult:
         return [w for w in self.widgets if w.get("widget_type") == widget_type]
 
 
-class GTIAgent:
+class GTIRelay:
     """Run one investigation and return the agent's final response.
 
     ``POST /agentspace/sessions`` blocks until the agent finishes (often minutes).
@@ -83,7 +84,7 @@ class GTIAgent:
 
     The API key is read from ``api_key=`` or the ``VT_API_KEY`` environment variable.
     How that variable gets populated (secret manager, keychain, CI vault) is up to
-    your deployment — see README "Secrets".
+    your deployment (see README "Secrets").
     """
 
     _discovery_lock: Optional[asyncio.Lock] = None  # one discovery at a time per process
@@ -171,9 +172,9 @@ class GTIAgent:
     # ------------------------------------------------------------------ internals
 
     async def _start_session(self, client: httpx.AsyncClient, data: dict, files: Optional[dict]):
-        if GTIAgent._discovery_lock is None:
-            GTIAgent._discovery_lock = asyncio.Lock()
-        async with GTIAgent._discovery_lock:
+        if GTIRelay._discovery_lock is None:
+            GTIRelay._discovery_lock = asyncio.Lock()
+        async with GTIRelay._discovery_lock:
             before = await self._latest_session_id(client)
             post = asyncio.create_task(client.post("/agentspace/sessions", data=data, files=files))
             deadline = time.time() + min(30.0, self.timeout_seconds)

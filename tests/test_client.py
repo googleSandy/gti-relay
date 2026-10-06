@@ -5,7 +5,7 @@ import asyncio
 import httpx
 import pytest
 
-from gti_agentic import GTIAgent
+from gti_relay import GTIRelay
 
 SESSION = "sess-123"
 
@@ -69,7 +69,7 @@ def happy_api(monkeypatch):
 
 async def test_streams_progress_and_returns_raw_widgets(happy_api):
     seen = []
-    r = await GTIAgent(api_key="k", poll_interval=0.05).investigate("anything", on_progress=seen.append)
+    r = await GTIRelay(api_key="k", poll_interval=0.05).investigate("anything", on_progress=seen.append)
 
     assert r.ok and r.session_id == SESSION
     assert [u.kind for u in seen] == ["THOUGHT", "TOOL_CALL"]
@@ -95,7 +95,7 @@ async def test_prompt_is_sent_verbatim(monkeypatch):
         return httpx.Response(200, json={"data": []})
 
     patch_client(monkeypatch, handler)
-    await GTIAgent(api_key="k", poll_interval=0.01).investigate("exactly this", file=b"abc", file_name="a.ps1")
+    await GTIRelay(api_key="k", poll_interval=0.01).investigate("exactly this", file=b"abc", file_name="a.ps1")
     assert b"exactly this" in captured["body"] and b'filename="a.ps1"' in captured["body"]
 
 
@@ -106,7 +106,7 @@ async def test_timeout(monkeypatch):
         return httpx.Response(200, json={"data": []})
 
     patch_client(monkeypatch, handler)
-    r = await GTIAgent(api_key="k", poll_interval=0.05, timeout_seconds=0.5).investigate("x")
+    r = await GTIRelay(api_key="k", poll_interval=0.05, timeout_seconds=0.5).investigate("x")
     assert r.status == "TIMEOUT" and not r.ok and r.error
 
 
@@ -119,11 +119,11 @@ async def test_post_finishes_without_final_response(monkeypatch):
         return httpx.Response(200, json={"data": []})
 
     patch_client(monkeypatch, handler)
-    r = await GTIAgent(api_key="k", poll_interval=0.01).investigate("x")
+    r = await GTIRelay(api_key="k", poll_interval=0.01).investigate("x")
     assert r.status == "FAILED" and r.tools_executed == ["search"] and r.widgets == []
 
 
 def test_requires_api_key(monkeypatch):
     monkeypatch.delenv("VT_API_KEY", raising=False)
     with pytest.raises(ValueError):
-        GTIAgent()
+        GTIRelay()
